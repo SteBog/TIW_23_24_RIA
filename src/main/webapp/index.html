@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" type="text/css" href="css/index_style.css"/>
+    <script src="script/login-management.js" charset="utf-8" defer></script>
+    <script src="script/landing-page-script.js" charset="utf-8" defer></script>
+    <script src="script/registration-management.js" charset="utf-8" defer></script>
+</head>
+<body>
+<div class="background">
+    <div class="login-container" id="login-container">
+        <h1>Login</h1>
+        <form action="#">
+        	<fieldset>
+        		<p class="confermaReg"></p>
+	        	Username: <input type="text" placeholder="Username" name="login-username" required>
+	        	Password: <input type="password" placeholder="Password" name="login-password" required>
+	        	<input id="login-button" type="button" value="Log In">
+	        	<span id="error-message"></span>
+        	</fieldset>
+        </form>
+        <p>Non sei registrato? <span id="register-here">Registrati qui</span></p>
+    </div>
+    <div class="login-container" id="registration-container">
+        <h1>Registrazione</h1>
+        
+        <form action="#">
+	        Username: <input type="text" placeholder="Username" name="Username" required>
+	        nome: <input type="text" placeholder="nome" name="nome" required>
+	        cognome: <input type="text" placeholder="cognome" name="cognome" required>
+	        Email: <input type="email" placeholder="Email" name="Email" required>
+	        Password: <input type="password" placeholder="Password" name="Password" required>
+	        Confirm Password: <input type="password" placeholder="Conferma Password" name="cfPassword" required>
+	        <input type="button" id="registration-button" value="Registrati">
+	        <p id="reg-error-message" class="errore"></p>
+        </form>
+        
+        <p>Hai già un account? <span id="login-here">Accedi qui</span></p>
+    </div>
+</div>
+</body>
+</html>

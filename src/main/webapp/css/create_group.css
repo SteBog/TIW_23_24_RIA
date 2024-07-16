@@ -1,0 +1,142 @@
+/* General Styles */
+body, html {
+	height: 100%;
+	margin: 0;
+	font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: transparent ;
+}
+
+/* Background Container */
+div.background {
+	background-image: url('../images/sfondo_login.jpg');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Page Container */
+/* Page Container */
+div.pageContainer {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 1000px;
+    animation: fadeIn 1s;
+}
+
+/* Form Container */
+div.formContainer {
+	padding: 20px;
+	border-radius: 5px;
+	width: 700px;
+	text-align: center;
+	margin: auto;
+}
+
+div.formGroup {
+	margin-bottom: 15px;
+}
+
+input {
+	width: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+img.logo {
+	height: 100px;
+}
+
+/* Labels */
+label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+/* Buttons */
+button.creazione {
+	width: 95%;
+	padding: 10px;
+	background-color: #0056b3;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+button.creazione:hover {
+	background-color: #004494;
+}
+
+/* Details Element */
+details {
+	width: 200px;
+	background: #f9f9f9;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	padding: 2px;
+	margin-bottom: 1em;
+}
+
+details[open] {
+	background: #f0f0f0;
+}
+
+summary {
+	font-weight: bold;
+	margin: -.5em -.5em 0;
+	padding: .5em;
+}
+
+summary::-webkit-details-marker {
+	display: none;
+}
+
+/* Navigation Links */
+nav a {
+	display: block;
+	margin: 0;
+	padding: 0.5em 1em;
+	color: black;
+	text-decoration: none;
+}
+
+nav a:hover {
+	background: #e0e0e0;
+}
+
+a.logout:hover {
+	background-color: #f44336;
+	color: #fff;
+}
+
+/* Table Styles */
+table.tabellaProg {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table.tabellaProg, th, td {
+	border: 3px solid #ddd;
+	padding: 8px;
+}
+
+th {
+	background-color: #0056b3;
+	color: white;
+}
