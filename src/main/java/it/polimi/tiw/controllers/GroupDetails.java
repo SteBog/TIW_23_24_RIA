@@ -100,12 +100,12 @@ public class GroupDetails extends HttpServlet {
 			
 		//	codice per farmi dare l'elenco dei partecipanti del singolo gruppo con id = id
 		ArrayList<String[]> partecipanti = new ArrayList<>();
-		
+		PartecipationDAO partecipationDAO = new PartecipationDAO(connection);
 		try {
-			partecipanti = new PartecipationDAO(connection).getPartecipants(id);
+			partecipanti = partecipationDAO.getPartecipants(id);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal error");
 			return;
 		}
 		
@@ -113,9 +113,19 @@ public class GroupDetails extends HttpServlet {
 		// in caso negativo non può visualizzare quel gruppo
 		User utente = (User)session.getAttribute("user");
 		
-		if (!group.getadmin().equals(utente.getUsername()) && !partecipanti.contains(utente.getUsername())) {
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			response.getWriter().println("Forbidden ID");
+		try {
+			if (!group.getadmin().equals(utente.getUsername()) && !partecipationDAO.getPartecipantsUsernames(id).contains(utente.getUsername())) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				response.getWriter().println("Forbidden ID");
+				return;
+			}
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println(e.getMessage());
+			return;
+		} catch (IOException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal error");
 			return;
 		}
 		

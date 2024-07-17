@@ -12,9 +12,8 @@
 		}
 	});
 	
-	function createGroupsContainer(title, data) {
+	function createGroupsContainer(title, data, create_trash) {
 		var div_container = document.createElement("div");
-		div_container.id = "group_list_container";
 		
 		var header = document.createElement("h3");
 		header.textContent = title;
@@ -25,7 +24,7 @@
 		
 		createTableHeader(table);
 		
-		createTableBody(table, data);
+		createTableBody(table, data, create_trash);
 		
 		div_container.appendChild(table);
 		document.getElementById("pageContainer").appendChild(div_container);
@@ -54,7 +53,7 @@
 		table.appendChild(thead);
 	}
 	
-	function createTableBody(table, data) {
+	function createTableBody(table, data, create_trash) {
 		var tbody = document.createElement("tbody");
 		table.appendChild(tbody);
 		
@@ -71,7 +70,7 @@
 			details_cell = document.createElement("td");
 			details_cell.textContent = "Details";
 			details_cell.addEventListener("click", () => {
-				show_details(item["id"]);
+				show_details(item["id"], create_trash);
 			});
 			
 			row.appendChild(name_cell);
@@ -90,8 +89,9 @@
 	            switch (req.status) {
 	                case 200:
 						message = JSON.parse(req.responseText);
-	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"]);
-	                    break;
+	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"], true);
+	                    createGroupsContainer("I Gruppi di cui fai parte", message["groupsWithUser"], false);
+						break;
 	                default:
 	                    alert("Si è verificato un errore");
 	                    break;
@@ -102,7 +102,7 @@
 	    req.send();
 	}
 	
-	function show_details(group_id) {
+	function show_details(group_id, create_trash) {
 		var req = new XMLHttpRequest();
 	    req.onreadystatechange = () => {
 	        if (req.readyState == XMLHttpRequest.DONE) {
@@ -110,7 +110,7 @@
 	            switch (req.status) {
 	                case 200:
 						message = JSON.parse(req.responseText);
-						group_details_container(message);
+						group_details_container(message, create_trash);
 	                    break;
 	                default:
 						message = req.responseText;
@@ -124,20 +124,22 @@
 	    req.send();
 	}
 	
-	function group_details_container(data) {
-		document.getElementById("group_list_container").hidden = true;
+	function group_details_container(data, create_trash) {
+		document.getElementById("pageContainer").querySelectorAll("div").forEach((item) => {
+			if (item.id != "menu") item.hidden = true;
+		});
 		
 		var tabellaProg = document.createElement("table");
 		tabellaProg.className = "tabellaProg";
 		tabellaProg.id = "tabellaProg";
 		
-		add_home_to_nav();
+		add_home_to_nav(create_trash);
 		
 		group_details_container_header(tabellaProg);
 		
 		group_details_container_body(tabellaProg, data);
 		
-		add_trash();
+		if (create_trash) add_trash();
 	}
 	
 	function add_trash() {
@@ -155,18 +157,20 @@
 		document.getElementById("pageContainer").appendChild(trash);
 	}
 	
-	function add_home_to_nav() {
+	function add_home_to_nav(create_trash) {
 		var nav = document.getElementById("nav");
 		var span = document.createElement("span");
 		span.textContent = "Home";
 		span.id = "go-to-home-span";
 		span.addEventListener("click", (e) => {
 			document.getElementById("pageContainer").removeChild(document.getElementById("tabellaProg"));
-			document.getElementById("pageContainer").removeChild(document.getElementById("trash_icon"));
+			if(create_trash) document.getElementById("pageContainer").removeChild(document.getElementById("trash_icon"));
 			document.getElementById("nav").removeChild(document.getElementById("go-to-home-span"));
 			document.getElementById("header-details").open = false;
 			
-			document.getElementById("group_list_container").hidden = false;
+			document.getElementById("pageContainer").querySelectorAll("div").forEach((item) => {
+				if (item.id != "menu") item.hidden = false;
+			});
 		});
 		nav.appendChild(span);
 	}
@@ -308,6 +312,7 @@
 	            switch (req.status) {
 	                case 200:
 						partecipant.remove();
+						console.log(req.responseText);
 						alert("Eliminato con successo");
 	                    break;
 	                default:

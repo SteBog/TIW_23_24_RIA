@@ -92,15 +92,22 @@ public class DeletePartecipant extends HttpServlet {
 			response.getWriter().println(e.getMessage());
 			return;
 		} 
-		if (num_partecipants < gruppo.getMinPartecipanti()) {
+		if (num_partecipants <= gruppo.getMinPartecipanti()) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			response.getWriter().println("Requisito numero partecipanti non soddisfatto");
 			return;
 		}
 	
-		
+		int return_value = -1;
 		try {
-			partecipationDAO.deletePartecipation(groupName, user.getUsername(), partName, partLastName);
+			return_value = partecipationDAO.deletePartecipation(groupName, user.getUsername(), partName, partLastName);
+			response.setStatus(HttpServletResponse.SC_OK);
+			if (return_value == 0) {
+				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				response.getWriter().println("Si è verificato un errore durante l'eliminazione");
+			} else {
+				response.getWriter().println("OK");
+			}
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Impossibile eseguire l'operazione");
