@@ -59,7 +59,7 @@ public class Gruppi {
 		this.maxPartecipanti=maxPartecipanti;
 	}
 	public void setMinPartecipanti(int minPartecipanti) {
-		this.maxPartecipanti=minPartecipanti;
+		this.minPartecipanti = minPartecipanti;
 	}
 	
 	

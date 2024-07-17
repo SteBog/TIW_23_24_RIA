@@ -16,7 +16,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import it.polimi.tiw.beans.Gruppi;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.GruppiDAO;
 import it.polimi.tiw.dao.PartecipationDAO;
 
 /**
@@ -71,6 +73,31 @@ public class DeletePartecipant extends HttpServlet {
 		
 		User user = (User) session.getAttribute("user");
 		PartecipationDAO partecipationDAO = new PartecipationDAO(connection);
+		GruppiDAO groupDAO = new GruppiDAO(connection);
+		
+		//	check minimum number of partecipants
+		Gruppi gruppo = null;;
+		try {
+			gruppo = groupDAO.getGroupByName(groupName);
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Impossibile eseguire l'operazione");
+			return;
+		}
+		int num_partecipants = -1;
+		try {
+			num_partecipants = partecipationDAO.getPartecipants(groupName).size();
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println(e.getMessage());
+			return;
+		} 
+		if (num_partecipants < gruppo.getMinPartecipanti()) {
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			response.getWriter().println("Requisito numero partecipanti non soddisfatto");
+			return;
+		}
+	
 		
 		try {
 			partecipationDAO.deletePartecipation(groupName, user.getUsername(), partName, partLastName);

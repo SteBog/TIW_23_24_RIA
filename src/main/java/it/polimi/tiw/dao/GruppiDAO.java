@@ -84,6 +84,46 @@ public class GruppiDAO {
 		}
 		return gruppo;
 	}
+	
+	public Gruppi getGroupByName(String groupName) throws SQLException {
+		String query = "SELECT *, DATEDIFF(durata, CURDATE()) AS diff FROM gruppi WHERE gruppi.nome = ?";
+		Gruppi gruppo = null;
+
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setString(1, groupName);
+			result = pstatement.executeQuery();
+
+			while (result.next()) {
+				gruppo = new Gruppi();
+				gruppo.setID(result.getInt("ID"));
+				gruppo.setNome(result.getString("nome"));
+				gruppo.setDescrizione(result.getString("descrizione"));
+				gruppo.setDurata(result.getInt("diff"));
+				gruppo.setAdmin(result.getString("admin"));
+				gruppo.setMaxPartecipanti(result.getInt("max_partecipanti"));
+				gruppo.setMinPartecipanti(result.getInt("min_partecipanti"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (result != null)
+					result.close();
+			} catch (SQLException e1) {
+				throw e1;
+			}
+			try {
+				if (pstatement != null)
+					pstatement.close();
+			} catch (SQLException e1) {
+				throw e1;
+			}
+		}
+		return gruppo;
+	}
 
 	// (admin)
 	// crea un gruppo

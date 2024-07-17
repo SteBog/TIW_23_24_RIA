@@ -66,6 +66,23 @@ public class PartecipationDAO {
 			}
 		}
 	}
+	
+	public ArrayList<String[]> getPartecipants(String groupName) throws SQLException {
+		ArrayList<String[]> nomi = new ArrayList<>();
+		String query = "select distinct u.nome, u.cognome FROM (partecipation p JOIN users u ON p.user=u.username) JOIN gruppi ON ID_gruppo = ID WHERE gruppi.nome = ? ORDER BY cognome asc ";
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, groupName);
+			try (ResultSet result = pstatement.executeQuery();) {
+				while(result.next()) {
+					String[] temp = new String[2];
+					temp[0] = result.getString("nome");
+					temp[1] = result.getString("cognome");
+					nomi.add(temp);
+				}
+				return nomi;
+			}
+		}
+	}
 
 	// (admin)
 	// aggiunge gli inviti al gruppo appena creato
