@@ -74,7 +74,7 @@ summary::-webkit-details-marker {
     display: none;
 }
 
-nav a {
+nav span {
     display: block;
     margin: 0;
     padding: 0.5em 1em;
@@ -82,11 +82,11 @@ nav a {
     text-decoration: none;
 }
 
-nav a:hover {
+nav span:hover {
     background: #e0e0e0;
 }
 
-a.logout:hover {
+span.logout:hover {
     background-color: #f44336;
     color: #fff;
 }
@@ -100,6 +100,11 @@ table.tabellaProg {
 table.tabellaProg, th, td {
     border: 3px solid #ddd;
     padding: 8px;
+}
+
+.tabellaProg td span {
+	display: block;
+	margin: 10px 0px;
 }
 
 th {

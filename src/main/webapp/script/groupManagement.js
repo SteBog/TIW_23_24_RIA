@@ -86,9 +86,10 @@
 		var req = new XMLHttpRequest();
 	    req.onreadystatechange = () => {
 	        if (req.readyState == XMLHttpRequest.DONE) {
-	            var message = JSON.parse(req.responseText);
+	            var message;
 	            switch (req.status) {
 	                case 200:
+						message = JSON.parse(req.responseText);
 	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"]);
 	                    break;
 	                default:
@@ -110,7 +111,6 @@
 	                case 200:
 						message = JSON.parse(req.responseText);
 						group_details_container(message);
-						console.log(message);
 	                    break;
 	                default:
 						message = req.responseText;
@@ -131,9 +131,44 @@
 		tabellaProg.className = "tabellaProg";
 		tabellaProg.id = "tabellaProg";
 		
+		add_home_to_nav();
+		
 		group_details_container_header(tabellaProg);
 		
 		group_details_container_body(tabellaProg, data);
+		
+		add_trash();
+	}
+	
+	function add_trash() {
+		var trash = document.createElement("img");
+		trash.src = "images/trash.png";
+		trash.id = "trash_icon";
+		
+		trash.addEventListener("dragover", (e) => {
+			dragOver(e);
+		});
+		trash.addEventListener("dragleave", dragLeave);
+		trash.addEventListener("drop", (e) => {
+			drop(e);
+		});
+		document.getElementById("pageContainer").appendChild(trash);
+	}
+	
+	function add_home_to_nav() {
+		var nav = document.getElementById("nav");
+		var span = document.createElement("span");
+		span.textContent = "Home";
+		span.id = "go-to-home-span";
+		span.addEventListener("click", (e) => {
+			document.getElementById("pageContainer").removeChild(document.getElementById("tabellaProg"));
+			document.getElementById("pageContainer").removeChild(document.getElementById("trash_icon"));
+			document.getElementById("nav").removeChild(document.getElementById("go-to-home-span"));
+			document.getElementById("header-details").open = false;
+			
+			document.getElementById("group_list_container").hidden = false;
+		});
+		nav.appendChild(span);
 	}
 	
 	function group_details_container_header(table) {
@@ -184,6 +219,7 @@
 		// Creiamo la cella per 'nome'
 	    const td_nome = document.createElement('td');
 	    td_nome.textContent = group.nome;
+		td_nome.id = "details_group_name";
 	    trow.appendChild(td_nome);
 
 	    // Creiamo la cella per 'descrizione'
@@ -212,13 +248,78 @@
 	    trow.appendChild(td_minPartecipanti);
 		
 		const td_partecipanti = document.createElement("td");
+		td_partecipanti.id = "partecipants_list";
 		partecipants.forEach((item) => {
-			let span = document.createElement("span");
-			span.textContent = item;
-			td_partecipanti.appendChild(span);
+			let div_partecipant = document.createElement("span");
+			
+			let name = document.createElement("span");
+			name.textContent = item[0];
+			let lastname = document.createElement("span");
+			lastname.textContent = item[1];
+			
+			div_partecipant.appendChild(name);
+			div_partecipant.appendChild(lastname);
+			
+			div_partecipant.draggable = true;
+			div_partecipant.addEventListener("dragstart", (e) => {
+				dragStart(e);
+			});
+			
+			td_partecipanti.appendChild(div_partecipant);
 		});
 		trow.appendChild(td_partecipanti);
 		
 		table.appendChild(trow);
+	}
+	
+	
+	/*
+		Drag and Drop handling
+	*/
+	
+	let name_dragged, lastname_dragged, partecipant;
+	function dragStart(event) {
+		partecipant = event.target;
+		name_dragged = partecipant.children[0].textContent;
+		lastname_dragged = partecipant.children[1].textContent;
+	}
+	
+	function dragOver(event) {
+		event.preventDefault();
+	}
+	
+	function dragLeave() {
+		name_dragged = null;
+		lastname_dragged = null;
+	}
+	
+	function drop(event) {
+		event.preventDefault();
+		delete_user(name_dragged, lastname_dragged);
+		name_dragged = null;
+		lastname_dragged = null;
+	}
+	
+	function delete_user(userName, userLastName) {
+		var req = new XMLHttpRequest();
+	    req.onreadystatechange = () => {
+	        if (req.readyState == XMLHttpRequest.DONE) {
+	            var message;
+	            switch (req.status) {
+	                case 200:
+						partecipant.remove();
+						alert("Eliminato con successo");
+	                    break;
+	                default:
+						message = req.responseText;
+						console.log(message);
+	                    alert("Si è verificato un errore");
+	                    break;
+	            }
+	        }
+	    }
+		let group_name = document.getElementById("details_group_name").textContent;
+	    req.open("GET", "DeletePartecipant?groupName=" + group_name + "&partecipantName=" + userName + "&partecipantLastName=" + userLastName);
+	    req.send();
 	}
 }

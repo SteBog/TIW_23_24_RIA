@@ -50,23 +50,22 @@ public class PartecipationDAO {
 	
 	//(user)
 	//ritorna i dettagli dei partecipanti di un gruppo (escluso l'admin)
-	public ArrayList<String> getPartecipants(int id) throws SQLException{
-		ArrayList<String> nomi = new ArrayList<String>();
+	public ArrayList<String[]> getPartecipants(int id) throws SQLException {
+		ArrayList<String[]> nomi = new ArrayList<>();
 		String query = "select distinct nome, cognome FROM partecipation p JOIN users u ON p.user=u.username WHERE ID_gruppo = ? ORDER BY cognome asc ";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, id);
 			try (ResultSet result = pstatement.executeQuery();) {
 				while(result.next()) {
-					String temp;
-					temp = result.getString("nome") + "" + result.getString("cognome");
+					String[] temp = new String[2];
+					temp[0] = result.getString("nome");
+					temp[1] = result.getString("cognome");
 					nomi.add(temp);
 				}
 				return nomi;
 			}
 		}
 	}
-	
-	
 
 	// (admin)
 	// aggiunge gli inviti al gruppo appena creato
@@ -81,5 +80,15 @@ public class PartecipationDAO {
 		}
 	}
 	
-
+	public void deletePartecipation(String groupName, String admin, String userName, String userLastName) throws SQLException {
+		String query = "DELETE FROM partecipation WHERE (ID_gruppo, user) IN (SELECT ID_gruppo, user FROM ((gruppi JOIN(SELECT ID_gruppo, user from partecipation) as part ON gruppi.id = part.ID_gruppo) JOIN users ON part.user = users.username) WHERE gruppi.nome = ? AND gruppi.admin = ? AND users.nome = ? AND users.cognome = ?)";
+		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			pstatement.setString(1, groupName);
+			pstatement.setString(2, admin);
+			pstatement.setString(3, userName);
+			pstatement.setString(4, userLastName);
+			pstatement.executeUpdate();
+		}
+	}
 }

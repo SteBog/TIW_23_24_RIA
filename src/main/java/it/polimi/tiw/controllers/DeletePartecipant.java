@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -17,26 +14,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.lang.StringEscapeUtils;
 
-import it.polimi.tiw.beans.Gruppi;
 import it.polimi.tiw.beans.User;
-import it.polimi.tiw.dao.GruppiDAO;
 import it.polimi.tiw.dao.PartecipationDAO;
 
 /**
- * Servlet implementation class GetGroupsData
+ * Servlet implementation class DeletePartecipant
  */
-@WebServlet("/GetGroupsData")
-public class GetGroupsData extends HttpServlet {
+@WebServlet("/DeletePartecipant")
+public class DeletePartecipant extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-       
-    public GetGroupsData() {
+
+    public DeletePartecipant() {
         super();
     }
-
+    
     public void init() throws ServletException {
     	try {
     		ServletContext context = getServletContext();
@@ -52,8 +46,12 @@ public class GetGroupsData extends HttpServlet {
 			throw new UnavailableException("Couldn't get db connection");
 		}
     }
-    
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String groupName = null;
+		String partName = null;
+		String partLastName = null;
+		
 		HttpSession session = request.getSession();
 		if (session.isNew() || session.getAttribute("user") == null) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -61,41 +59,28 @@ public class GetGroupsData extends HttpServlet {
 			return;
 		}
 		
+		groupName = StringEscapeUtils.escapeJava(request.getParameter("groupName"));
+		partName = StringEscapeUtils.escapeJava(request.getParameter("partecipantName"));
+		partLastName = StringEscapeUtils.escapeJava(request.getParameter("partecipantLastName"));
+		
+		if (groupName == null || groupName.isBlank() || partName == null || partName.isBlank() || partLastName == null || partLastName.isBlank()) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Parametri mancanti");
+			return;
+		}
+		
 		User user = (User) session.getAttribute("user");
-		GruppiDAO gruppiDAO = new GruppiDAO(connection);
-		ArrayList<Gruppi> adminGroups = new ArrayList<Gruppi>();
-		
-		try {
-			adminGroups = gruppiDAO.getActiveGroupsByUser(user.getUsername());
-		} catch (SQLException e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Not possible to recover groups");
-			return;
-		}
-		
 		PartecipationDAO partecipationDAO = new PartecipationDAO(connection);
-		ArrayList<Gruppi> GroupsWithUser = new ArrayList<Gruppi>();
+		
 		try {
-			GroupsWithUser = partecipationDAO.getGroupsWithUser(user.getUsername());
+			partecipationDAO.deletePartecipation(groupName, user.getUsername(), partName, partLastName);
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Not possible to recover groups");
+			response.getWriter().println("Impossibile eseguire l'operazione");
 			return;
 		}
-		
-		Map<String, ArrayList<Gruppi>> result = new HashMap<>();
-		result.put("adminGroups", adminGroups);
-		result.put("groupsWithUser", GroupsWithUser);
-		
-		Gson gson = new GsonBuilder()
-				   .setDateFormat("yyyy MMM dd").create();
-		String json = gson.toJson(result);
-		
-		
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json);
 	}
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

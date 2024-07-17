@@ -99,7 +99,7 @@ public class GroupDetails extends HttpServlet {
 		}
 			
 		//	codice per farmi dare l'elenco dei partecipanti del singolo gruppo con id = id
-		ArrayList<String> partecipanti = new ArrayList<>();
+		ArrayList<String[]> partecipanti = new ArrayList<>();
 		
 		try {
 			partecipanti = new PartecipationDAO(connection).getPartecipants(id);
