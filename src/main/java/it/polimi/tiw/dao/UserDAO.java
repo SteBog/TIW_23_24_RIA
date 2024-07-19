@@ -98,8 +98,27 @@ public class UserDAO {
 				return listaUtenti;
 			}
 		}
+	}
+	
+	public ArrayList<User> getUserNormalData() throws SQLException{
+		String query = "SELECT * FROM users ORDER BY cognome asc";
+		ArrayList<User> listaUtenti = new ArrayList<User>();
 		
-		
+		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			try (ResultSet result = pstatement.executeQuery();) {
+				while (result.next()) {
+					User ser = new User(result.getString("username"), result.getString("password"),
+							result.getString("email"), result.getString("nome"), result.getString("cognome"));
+					User user = new User();
+					user.setNome(result.getString("nome"));
+					user.setCognome(result.getString("cognome"));
+					user.setUsername(result.getString("username"));
+					listaUtenti.add(user);
+				}
+
+				return listaUtenti;
+			}
+		}
 	}
 
 }

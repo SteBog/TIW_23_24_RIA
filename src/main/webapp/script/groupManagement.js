@@ -12,6 +12,27 @@
 		}
 	});
 	
+	function downloadGroupData() {
+		var req = new XMLHttpRequest();
+	    req.onreadystatechange = () => {
+	        if (req.readyState == XMLHttpRequest.DONE) {
+	            var message;
+	            switch (req.status) {
+	                case 200:
+						message = JSON.parse(req.responseText);
+	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"], true);
+	                    createGroupsContainer("I Gruppi di cui fai parte", message["groupsWithUser"], false);
+						break;
+	                default:
+	                    alert("Si è verificato un errore");
+	                    break;
+	            }
+	        }
+	    }
+	    req.open("POST", "GetGroupsData");
+	    req.send();
+	}
+	
 	function createGroupsContainer(title, data, create_trash) {
 		var div_container = document.createElement("div");
 		
@@ -79,27 +100,6 @@
 			
 			tbody.appendChild(row);
 		});
-	}
-	
-	function downloadGroupData() {
-		var req = new XMLHttpRequest();
-	    req.onreadystatechange = () => {
-	        if (req.readyState == XMLHttpRequest.DONE) {
-	            var message;
-	            switch (req.status) {
-	                case 200:
-						message = JSON.parse(req.responseText);
-	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"], true);
-	                    createGroupsContainer("I Gruppi di cui fai parte", message["groupsWithUser"], false);
-						break;
-	                default:
-	                    alert("Si è verificato un errore");
-	                    break;
-	            }
-	        }
-	    }
-	    req.open("POST", "GetGroupsData");
-	    req.send();
 	}
 	
 	function show_details(group_id, create_trash) {

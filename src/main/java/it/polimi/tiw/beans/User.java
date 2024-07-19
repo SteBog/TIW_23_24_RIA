@@ -14,6 +14,8 @@ public class User {
 		this.nome=nome;
 		this.cognome=cognome;
 	}
+	
+	public User() {};
 
 	/*
 	 * getter
@@ -36,5 +38,23 @@ public class User {
 	}
 	
 	
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
+	}
 }
