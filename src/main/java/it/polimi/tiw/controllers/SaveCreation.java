@@ -95,7 +95,7 @@ public class SaveCreation extends HttpServlet {
 			// se è a 3 lo porto alla pagina CANCELLAZIONE
 			//prima del redirect resetto il contatore per delle prossime creazioni 
 			tentativi = null;
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.setStatus(HttpServletResponse.SC_REQUEST_TIMEOUT);
 			response.getWriter().println("Troppi tentativi");
 			return;
 		}

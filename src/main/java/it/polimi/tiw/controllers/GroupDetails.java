@@ -89,7 +89,9 @@ public class GroupDetails extends HttpServlet {
 		try {
 			group = new GruppiDAO(connection).getGroupById(id);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal error");
+			return;
 		}
 		
 		if (group == null) {

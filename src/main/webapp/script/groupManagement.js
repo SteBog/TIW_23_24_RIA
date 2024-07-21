@@ -29,7 +29,7 @@
 	            }
 	        }
 	    }
-	    req.open("POST", "GetGroupsData");
+	    req.open("GET", "GetGroupsData");
 	    req.send();
 	}
 	

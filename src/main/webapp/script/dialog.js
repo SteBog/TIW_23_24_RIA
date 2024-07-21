@@ -104,6 +104,7 @@
 		return div;
 	}
 	
+	let tentativi = 0;
 	function create_anagrafica() {
 		let modal_window = document.getElementById("modal-window");
 		let modal_content = modal_window.firstChild;
@@ -130,8 +131,20 @@
 			
 			if (checkedCounter < min_part) {
 				alert("Numero di invitati insufficiente");
+				
+				tentativi++;
+				if (tentativi >= 3) {
+					document.getElementById("modal-window").remove();
+					tentativi = 0;
+				}
 			} else if (checkedCounter > max_par) {
 				alert("Numero di invitati eccessivo");
+				
+				tentativi++;
+				if (tentativi >= 3) {
+					document.getElementById("modal-window").remove();
+					tentativi = 0;
+				}
 			} else {
 				save_creation(form);
 			}
@@ -140,6 +153,7 @@
 		form.appendChild(submit);
 	}
 	
+	
 	function save_creation(form) {
 		var req = new XMLHttpRequest();
 	    req.onreadystatechange = () => {
@@ -147,8 +161,12 @@
 	            var data = req.responseText;
 	            switch (req.status) {
 	                case 200:
+						alert("Gruppo creato correttamente");
 						document.getElementById("modal-window").remove();
 						break;
+					case 408:
+						alert("Numero di tentativi massimo superato");
+						document.getElementById("modal-window").remove();
 	                default:
 	                    console.log("Si è verificato un errore");
 						break;
