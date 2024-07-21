@@ -102,6 +102,7 @@ public class Register extends HttpServlet {
 				return;
 				
 			} else {
+				request.getSession().setAttribute("user", usr);
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(usrn);
 				return;

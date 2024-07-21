@@ -24,6 +24,7 @@
 	                    createGroupsContainer("I Gruppi di cui fai parte", message["groupsWithUser"], false);
 						break;
 	                default:
+						console.log(message);
 	                    alert("Si è verificato un errore");
 	                    break;
 	            }
