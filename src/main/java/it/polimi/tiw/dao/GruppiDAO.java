@@ -131,6 +131,9 @@ public class GruppiDAO {
 	public void addGroup(String nome, String descrizione, int durata, String admin, int maxPartecipanti,
 			int minPartecipanti, ArrayList<String> partecipanti) throws SQLException {
 
+		// Disable auto-commit
+        connection.setAutoCommit(false);
+		
 		String query = "INSERT INTO gruppi (nome, descrizione, durata, admin, min_partecipanti, max_partecipanti) VALUES (?, ?, DATE_ADD(CURDATE(), INTERVAL ? DAY), ?, ?, ?)";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setString(1, nome);
@@ -140,6 +143,16 @@ public class GruppiDAO {
 			pstatement.setInt(5, minPartecipanti);
 			pstatement.setInt(6, maxPartecipanti);
 			pstatement.executeUpdate();
+			
+			connection.commit();
+		} catch (SQLException e) {
+			// Rollback the transaction
+			connection.rollback();
+			throw e;
+			
+		} finally {
+			// Re-enable auto-commit
+			connection.setAutoCommit(true);
 		}
 
 		// aggiunto i partecipanti
@@ -153,13 +166,28 @@ public class GruppiDAO {
 		
 		int temp;
 		String query2 = "SELECT ID FROM gruppi WHERE nome = ?"; //il nome è unique!!!
+		
+		// Disable auto-commit
+        connection.setAutoCommit(false);
+		
 		try (PreparedStatement pstatement2 = connection.prepareStatement(query2);) {
 			pstatement2.setString(1, nome);
 			try(ResultSet result = pstatement2.executeQuery();){
 				result.next();
 				temp = result.getInt("ID");
 			}
+			
+			connection.commit();
+		}catch (SQLException e) {
+			// Rollback the transaction
+			connection.rollback();
+			throw e;
+			
+		} finally {
+			// Re-enable auto-commit
+			connection.setAutoCommit(true);
 		}
+		
 		//chiamo il partecipation dao e aggiungo tutti i partecipanti 
 		PartecipationDAO pdao = new PartecipationDAO(this.connection);
 		pdao.addPartecipation(partecipanti, temp);

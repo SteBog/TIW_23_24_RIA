@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.tiw.beans.Gruppi;
 import it.polimi.tiw.beans.User;
+import it.polimi.tiw.dao.GruppiDAO;
 
 /**
  * Servlet implementation class CreateGroup
@@ -62,7 +63,9 @@ public class CreateGroup extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		if (session.isNew() || session.getAttribute("user") == null) {
-//			errore
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Utente non definito");
+			return;
 		}
 		
 		String nome = null;
@@ -124,6 +127,21 @@ public class CreateGroup extends HttpServlet {
 		if(giorni==0){
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("La durata deve essere maggiore di zero");
+			return;
+		}
+		
+		//controllo che non esista un gruppo con il nome uguale
+		GruppiDAO groupDAO = new GruppiDAO(connection);
+		try {
+			if(groupDAO.alreadyExistingGroup(nome)) {
+				response.setStatus(HttpServletResponse.SC_CONFLICT);
+				response.getWriter().println("Group already existing");
+				return;
+			}
+			
+		}catch (SQLException e){
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Server error.");
 			return;
 		}
 		

@@ -75,7 +75,7 @@ public class DeletePartecipant extends HttpServlet {
 		PartecipationDAO partecipationDAO = new PartecipationDAO(connection);
 		GruppiDAO groupDAO = new GruppiDAO(connection);
 		
-		//	check minimum number of partecipants
+		//	check minimum number of participants
 		Gruppi gruppo = null;;
 		try {
 			gruppo = groupDAO.getGroupByName(groupName);
