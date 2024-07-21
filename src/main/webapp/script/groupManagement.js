@@ -16,7 +16,7 @@
 		var req = new XMLHttpRequest();
 	    req.onreadystatechange = () => {
 	        if (req.readyState == XMLHttpRequest.DONE) {
-	            var message;
+	            var message = req.responseText;
 	            switch (req.status) {
 	                case 200:
 						message = JSON.parse(req.responseText);

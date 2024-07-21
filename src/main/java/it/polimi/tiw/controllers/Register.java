@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 
 /**
@@ -102,7 +103,8 @@ public class Register extends HttpServlet {
 				return;
 				
 			} else {
-				request.getSession().setAttribute("user", usr);
+				User user = new User(usrn, pwd, email, nome, cognome);
+				request.getSession().setAttribute("user", user);
 				response.setStatus(HttpServletResponse.SC_OK);
 				response.getWriter().println(usrn);
 				return;
