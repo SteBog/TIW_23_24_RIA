@@ -109,13 +109,8 @@ public class PartecipationDAO {
 				pstatement.setInt(1, id);
 				pstatement.setString(2, username);
 				pstatement.executeUpdate();
-				
-				
 			}catch (SQLException e) {
-				// Rollback the transaction
-				connection.rollback();
 				throw e;
-				
 			}
 		}
 	}

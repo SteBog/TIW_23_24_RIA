@@ -177,10 +177,7 @@ public class GruppiDAO {
 			pdao.addPartecipation(partecipanti, temp);
 			
 		}catch (SQLException e) {
-			// Rollback the transaction
-			connection.rollback();
 			throw e;
-			
 		}
 		
 	}
