@@ -110,16 +110,12 @@ public class PartecipationDAO {
 				pstatement.setString(2, username);
 				pstatement.executeUpdate();
 				
-				connection.commit();
 				
 			}catch (SQLException e) {
 				// Rollback the transaction
 				connection.rollback();
 				throw e;
 				
-			} finally {
-				// Re-enable auto-commit
-				connection.setAutoCommit(true);
 			}
 		}
 	}
