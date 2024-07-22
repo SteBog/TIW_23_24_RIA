@@ -20,6 +20,7 @@
 	            switch (req.status) {
 	                case 200:
 						message = JSON.parse(req.responseText);
+						
 	                    createGroupsContainer("I tuoi Gruppi", message["adminGroups"], true);
 	                    createGroupsContainer("I Gruppi di cui fai parte", message["groupsWithUser"], false);
 						break;

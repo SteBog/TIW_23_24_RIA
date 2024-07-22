@@ -37,13 +37,11 @@
 		
 		minPart.addEventListener("change", (e) => {
 			min_part = parseInt(minPart.children[1].value);
-			console.log(min_part);
 			maxPart.querySelector("input").setAttribute("min", parseInt(e.target.value));
 		});
 		
 		maxPart.addEventListener("change", (e) => {
 			max_par = parseInt(maxPart.children[1].value);
-			console.log(max_par);
 		});
 		
 		let error_span = document.createElement("span");
@@ -163,6 +161,11 @@
 	                case 200:
 						alert("Gruppo creato correttamente");
 						document.getElementById("modal-window").remove();
+						let container = document.getElementById("pageContainer").querySelectorAll("div");
+						container[2].remove();
+						container[1].remove();
+						
+						downloadGroupData();
 						break;
 					case 408:
 						alert("Numero di tentativi massimo superato");
